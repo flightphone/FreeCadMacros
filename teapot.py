@@ -8,9 +8,9 @@ from CADUtils import make_offset
 def tpot():
     h = 10
     r = 4
-    sr = 4.2
+    sr = 3.6
     th = 0.05
-    th2 = 0.3
+    th2 = 0.1
     doc = App.newDocument()
     res = Part.makeCylinder(r, h)
     cube = Part.makeBox(sr, sr, 3*sr, App.Vector(-sr/2, -sr/2, -1.5*sr), App.Vector(1, 1, 2.3))
@@ -32,7 +32,7 @@ def tpot():
     cubem2 = Part.makeBox(200,200, 200, App.Vector(-100, -100, h-th-0.01))
     res = res.cut(cubem2)
     res = make_offset(doc, res, th2, "oute")
-    res = res.makeFillet(0.1, res.Edges)
+    #res = res.makeFillet(0.1, res.Edges)
     
     res = res.fuse(tor)
 
