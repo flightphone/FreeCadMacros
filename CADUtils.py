@@ -1,3 +1,21 @@
+
+def make_revolve(doc, shape, name, angle = 360, axis = (0, 0, 1), base = (0, 0, 0)):
+    shapeobj = doc.addObject("Part::Feature", name)
+    shapeobj.Shape = shape
+    shapeobj.Visibility = False
+    Revolve = doc.addObject("Part::Revolution", name + "_revolve")
+    Revolve.Source = shapeobj
+    Revolve.Axis = axis
+    Revolve.Base = base
+    Revolve.Angle = angle
+    Revolve.Solid = True
+    Revolve.AxisLink = None
+    Revolve.Symmetric = False
+    Revolve.Visibility = False
+    doc.recompute()
+    return Revolve.Shape
+
+
 def make_offset(doc, bott, th, name, D2 = False):
     bottf = doc.addObject("Part::Feature", name)
     bottf.Shape = bott
@@ -11,7 +29,6 @@ def make_offset(doc, bott, th, name, D2 = False):
     Offset.Intersection = True
     Offset.SelfIntersection = D2
     Offset.Fill = D2
-    
     Offset.Visibility = False
 
     doc.recompute()

@@ -23,7 +23,7 @@ def prism(n, r, h):
     pri=botf.extrude(App.Vector(0, 0, h))
     
     faces = [botf]
-    v = (0, 0, 2*h/3)
+    v = (0, 0, 0.5* h)
     
     for i in range(n):
         p = Part.makePolygon([points[i], points[i+1], v, points[i]])
@@ -45,6 +45,9 @@ def prism(n, r, h):
         ma.rotate(App.Vector(0, 0, 0),App.Vector(0, 0, 1), a*180/math.pi)
         res = res.cut(ma)
 
+    r2 = 0.8*r
+    cyl2 = Part.makeCylinder(r2, ha)
+    #res = res.cut(cyl2)
     '''
     fi = [2, 3, 4, 5, 23, 24, 25, 26, 34, 35, 36, 37, 50, 51, 52, 53, 81, 82, 83, 84, 95, 96, 97, 98, 126, 127, 128, 129, 138, 139, 140, 141]
     fil = [res.Edges[i] for i in fi]
@@ -57,5 +60,5 @@ def prism(n, r, h):
     return res
 
 
-el = prism(5, 5, 8)
+el = prism(6, 5, 8)
 

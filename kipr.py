@@ -92,11 +92,9 @@ def kipr():
     arc4 = marc(ar4, hr4, 40)
     arc4.translate(App.Vector(r0-d, 0, h22))
 
-
     ruf.translate(App.Vector(0, -w2-w/2, 0))
     
     res = Part.makeBox(w, w, h22-h, App.Vector(-w/2, -w/2, h))
-    
     cy = Part.makeCylinder(r0, h3-h, App.Vector(0, 0, h))
     cyI = Part.makeCylinder(r0-d+0.1, h3+1)
     
