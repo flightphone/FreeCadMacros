@@ -1,3 +1,12 @@
+import Part
+
+def make_rect(w, h):
+    points = [(-w/2, h/2, 0), (w/2, h/2, 0), (w/2, -h/2, 0), (-w/2, -h/2, 0), (-w/2, h/2, 0)]
+    res = Part.makePolygon(points)
+    return res
+
+
+
 
 def make_revolve(doc, shape, name, angle = 360, axis = (0, 0, 1), base = (0, 0, 0)):
     shapeobj = doc.addObject("Part::Feature", name)
@@ -33,3 +42,4 @@ def make_offset(doc, bott, th, name, D2 = False):
 
     doc.recompute()
     return Offset.Shape
+
