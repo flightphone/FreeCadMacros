@@ -36,19 +36,36 @@ def tube():
     bot = make_rect(2*r, w)
     #bot = Part.makePlane(2*r, w, App.Vector(-r, -w/2, 0))
     cil = Part.makeCircle(r, App.Vector(0, 0, h))
-    res = Part.makeLoft([bot, cil], True, False)
-    #res = make_offset(doc, res, d, "tube")
+    bodi = Part.makeLoft([bot, cil], True, False)
+    
     cone = Part.makeCone(r, r2, h2, App.Vector(0, 0, h))
-    res = res.fuse(cone)
+    
+    #res = res.fuse(cone)
     cone2 = conetop(r2, r3, h3, 0.1, 0.15, 20)
     cone2.translate(App.Vector(0, 0, h+h2))
     #cone2 = Part.makeCone(r2, r3, h3, App.Vector(0, 0, h+h2))
-    res = res.fuse(cone2)
+    #res = res.fuse(cone2)
 
+    sps = [bodi, cone, cone2]
+    names = ["bodi", "cone", "top"]
+    parts = []
+    for i, e in zip(names, sps):
+        rf = doc.addObject("Part::Feature", f"{i}")
+        rf.Shape = e
+        parts.append(rf)
+        doc.recompute()
+        #Mesh.export([rf], f"stl/tube/{i}.stl") 
+
+    '''
+    res = sps[0] 
+    for i in range(1, len(sps)):
+        res = res.fuse(sps[i])
+    '''
+    res = Part.makeCompound(sps)
     resf = doc.addObject("Part::Feature", "res")
     resf.Shape = res        
     doc.recompute()   
-    #Mesh.export([resf], "stl/tube.stl")
+    Mesh.export([resf], "stl/tube.stl")
     return res     
 
 r = tube()    
