@@ -33,6 +33,7 @@ class ImplicitGeometry extends BufferGeometry {
         const indices = [];
         const vertices = [];
         const normals = [];
+        const uvs = [];
         //const colors = [];
         
         const shifts = [
@@ -106,6 +107,7 @@ class ImplicitGeometry extends BufferGeometry {
         this.setIndex(indices);
         this.setAttribute('position', new Float32BufferAttribute(vertices, 3));
         this.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+        this.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
         //this.setAttribute('color', new Float32BufferAttribute(colors, 3));
 
         function getCase(n) {
@@ -160,6 +162,7 @@ class ImplicitGeometry extends BufferGeometry {
         }
         function addPoint(po = new Vector3) {
             vertices.push(po.x, po.y, po.z);
+            uvs.push(Math.atan2(po.y, po.x)/Math.PI/2, Math.atan2(po.z, Math.sqrt(po.x*po.x + po.y*po.y))/Math.PI);
             let nor = NormalUtils.implicit_norm(fun, po.x, po.y, po.z);
             normals.push(nor.x, nor.y, nor.z);
             //colors.push(Math.abs(nor.x), Math.abs(nor.y), Math.abs(nor.z))

@@ -1,5 +1,5 @@
 import { BufferGeometry, Float32BufferAttribute, Vector3 } from "three";
-import { NormalUtils } from "./NormalUtils";
+import { NormalUtils } from "./NormalUtils.js";
 class CurveGeometry extends BufferGeometry {
 
     constructor(curve = (t) => { }, tmin = 0, tmax = 1, radius = 0.2, tseg = 200, rseg = 40, repeat = 1, mode = 0) {
