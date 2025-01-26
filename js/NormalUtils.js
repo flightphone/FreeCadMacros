@@ -1,4 +1,5 @@
 import { Vector3, Matrix3, BufferGeometry, Float32BufferAttribute, CurvePath } from "three";
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 const h = 0.001;
 const eps = 0.001;
 class NormalUtils {
@@ -13,7 +14,28 @@ class NormalUtils {
         let res = p.curves[i].getPointAt(t);
         return new Vector3(res.x, res.y, res.z);
     }
+    static make_offset(geom = new BufferGeometry(), width = 0.1) {
+        const res = new BufferGeometry();
+        const vertices = [];
+        const pos = geom.getAttribute("position");
+        const norm = geom.getAttribute("normal");
+        const count = pos.count;
+        for (let i = 0; i < count; i++)
+        {
+            let ve = new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)); 
+            let no = new Vector3(norm.getX(i), norm.getY(i), norm.getZ(i)); 
+            no.multiplyScalar(width);
+            ve.add(no);
+            vertices.push(ve.x, ve.y, ve.z);
+        }
+        res.setIndex(geom.index);
+        res.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+        res.setAttribute('normal', norm);
+        res.setAttribute('uv', geom.getAttribute("uv"));
+        return res
+    }
     static addGeom(geoms = [new BufferGeometry()]) {
+        /*
         const indices = [];
         const vertices = [];
         const normals = [];
@@ -32,6 +54,8 @@ class NormalUtils {
         res.setAttribute('position', new Float32BufferAttribute(vertices, 3));
         res.setAttribute('normal', new Float32BufferAttribute(normals, 3));
         res.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
+        */
+        const res = BufferGeometryUtils.mergeGeometries(geoms, false)
         return res;
     }
     
