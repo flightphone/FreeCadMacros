@@ -23,11 +23,11 @@ savegeom(geom, "./obj/cyl4.stl");
 //const geom = new ImplicitGeometry(MCF.sphere,  -2,   2,   -2,   2,   -2,   2,  100,  10);
 //savegeom(geom, "./obj/sphere111a.obj");
 // 
-//const geom = new SurfGeometry(MCF.boys, 0, Math.PI,  0,  Math.PI, 100, 100);
-//savegeom(geom, "./stl/boys.stl");
+const geom = new SurfGeometry(MCF.boys, 0, Math.PI,  0,  Math.PI, 100, 100);
+savegeom(geom, "./public/stl/render.stl");
 
-const geom = new ImplicitGeometry(MathCurve.chair, -2, 2, -2, 2, -2, 2, 100)
-savegeom(geom, "./obj/chair.obj");
+//const geom = new ImplicitGeometry(MathCurve.chair, -2, 2, -2, 2, -2, 2, 100)
+//savegeom(geom, "./obj/chair.obj");
 console.log("ok");
 
 //edgeSplit("./stl/kipr.stl", "./obj/kipr10.obj");

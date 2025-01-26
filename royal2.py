@@ -105,8 +105,9 @@ def royal():
     resf = doc.addObject("Part::Feature", "res")
     resf.Shape = res        
     doc.recompute()   
-    Mesh.export([resf], "stl/royal_2.stl")
+    Mesh.export([resf], "public/stl/render.stl")
     return res     
 
 r = royal()    
 #r.exportStl("stl/royal2.stl")
+print("ok")

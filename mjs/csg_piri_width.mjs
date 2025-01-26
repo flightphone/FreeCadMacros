@@ -30,8 +30,8 @@ function piri() {
 
     const result = evaluator.evaluate(brush3, brush4, SUBTRACTION);
 
-    savegeom(result.geometry, "./stl/piri.stl");
-    savegeom(result.geometry, "./obj/piri.obj");
+    savegeom(result.geometry, "./public/stl/render.stl");
+    //savegeom(result.geometry, "./obj/piri.obj");
 
     console.log("ok");
 }
@@ -39,9 +39,10 @@ function piri() {
 function eggbox()
 {
     
-    let geom2 = new SurfGeometry(MCF.egg_box1, 8,  -8,  -8, 8,  200,  200);
+    const geom2 = new SurfGeometry(MCF.egg_box1, 8,  -8,  -8, 8,  200,  200);
     const geom4 = new THREE.BoxGeometry(6, 6, 4, 100, 100, 100)
-    
+    //const geom3 = NormalUtils.addGeom([geom2, geom4])
+    //savegeom(geom3, "./public/stl/prism.stl");
     
     const brush2 = new Brush(geom2);
     brush2.updateMatrixWorld();
@@ -52,11 +53,11 @@ function eggbox()
 
     const evaluator = new Evaluator();
     const result = evaluator.evaluate(brush2, brush4, INTERSECTION);
-    savegeom(result.geometry, "./stl/eggbox.stl");
-    savegeom(result.geometry, "./obj/eggbox.obj");
+    savegeom(result.geometry, "./public/stl/render.stl");
+    //savegeom(result.geometry, "./obj/eggbox.obj");
     console.log("egg");
 
 }
 
-//piri();
-eggbox();
+piri();
+//eggbox();

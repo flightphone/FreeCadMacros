@@ -60,7 +60,7 @@ const evaluator3 = new Evaluator();
 const result = evaluator3.evaluate( h2, h1, SUBTRACTION);
 */
 
-savegeom(result.geometry, "./stl/hyper_width.stl");
+savegeom(result.geometry, "./public/stl/render.stl");
 
 
 console.log("ok");

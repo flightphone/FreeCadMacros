@@ -46,7 +46,7 @@ def glass():
     
     resf = doc.addObject("Part::Feature", "glass")
     resf.Shape = res
-    Mesh.export([resf], "stl/glass3.stl")
+    Mesh.export([resf], "public/stl/render.stl")
     return res
 
 glass()

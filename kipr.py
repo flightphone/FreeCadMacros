@@ -127,8 +127,9 @@ def kipr():
     resf = doc.addObject("Part::Feature", "res")
     resf.Shape = res        
     doc.recompute()   
-    Mesh.export([resf], "stl/kipr.stl")
+    Mesh.export([resf], "public/stl/render.stl")
     return res  
 
 kipr()
+print("ok")
 
