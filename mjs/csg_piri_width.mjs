@@ -54,10 +54,10 @@ function eggbox()
     const evaluator = new Evaluator();
     const result = evaluator.evaluate(brush2, brush4, INTERSECTION);
     savegeom(result.geometry, "./public/stl/render.stl");
-    //savegeom(result.geometry, "./obj/eggbox.obj");
+    savegeom(result.geometry, "./obj/eggbox.obj");
     console.log("egg");
 
 }
 
-piri();
-//eggbox();
+//piri();
+eggbox();
