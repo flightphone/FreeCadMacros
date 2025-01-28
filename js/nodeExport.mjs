@@ -9,6 +9,9 @@ import * as path from "node:path"
 
 function savegeom(geom, filename) {
     const me = (geom.isBufferGeometry) ? new THREE.Mesh(geom) : geom;
+    if (!me.name)
+        me.name = path.basename(filename);
+
     let ext = path.extname(filename)
     ext = ext.toLowerCase();
 
@@ -20,7 +23,7 @@ function savegeom(geom, filename) {
     else {
         const dir = path.dirname(filename)
         const filemtl = path.basename(filename).toLowerCase().replace(".obj", ".mtl");
-        const filename2 = dir + '/'+ filemtl;
+        const filename2 = dir + '/' + filemtl;
         const result = exporter.parse(me, filemtl);
         fs.writeFileSync(filename, result.obj);
         fs.writeFileSync(filename2, result.mtl);
@@ -37,24 +40,45 @@ function toArrayBuffer(buffer) {
     }
     return arrayBuffer;
 }
+function calcNormal(geom) {
+    const modifier = new EdgeSplitModifier();
+    const cutOffAngle = 20 * Math.PI / 180;
+    const tryKeepNormals = false;
+    const geometry = modifier.modify(geom, cutOffAngle, tryKeepNormals);
+    geometry.computeVertexNormals();
+    return geometry;
+}
 
 function edgeSplit(srcstl, dstobj) {
     const loader = new STLLoader()
     const buffer = fs.readFileSync(srcstl);
     const blobArray = toArrayBuffer(buffer);
     const geom = loader.parse(blobArray)
-    const modifier = new EdgeSplitModifier();
-    const cutOffAngle = 20 * Math.PI / 180;
-    const tryKeepNormals = false;
-    const geometry = modifier.modify(geom, cutOffAngle, tryKeepNormals);
-    geometry.computeVertexNormals();
+    const geometry = calcNormal(geom)
     savegeom(geometry, dstobj)
     //console.log("ok")
 }
-/*
-let ext = /\..../
-let str =  "sdf.obj".match(ext)
-console.log(str)
-*/
+function mergeSTL(srcstl = []) {
+    const result = new THREE.Object3D()
+    const loader = new STLLoader()
+    srcstl.forEach((filename) => {
+        const buffer = fs.readFileSync(filename);
+        const blobArray = toArrayBuffer(buffer);
+        const geom = loader.parse(blobArray);
+        const geometry = calcNormal(geom);
+        const mesh = new THREE.Mesh(geometry);
+        mesh.name = path.basename(filename);
+        result.add(mesh)
+    });
+    return result;
+}
 
-export { savegeom, edgeSplit }
+function mergeDirSTL(folderPath)
+{
+    const srcstl = fs.readdirSync(folderPath).map(fileName => {
+        return folderPath + '/' + fileName;
+      });
+    return mergeSTL(srcstl);  
+}
+
+export { savegeom, edgeSplit, mergeSTL, mergeDirSTL }

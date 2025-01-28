@@ -48,8 +48,8 @@ function ruf() {
     const geom1 = NormalUtils.addGeom(geoms1)
     
     //savegeom(geom0, './obj/ruf00.obj');
-    savegeom(geom1, './obj/ruf10.obj')
-    savegeom(geom0, './stl/ruf_0new.stl');
+    //savegeom(geom1, './obj/ruf10.obj')
+    //savegeom(geom0, './stl/ruf_0new.stl');
     //savegeom(geom1, './stl/ruf10.stl')
     
     const materialFun = new THREE.MeshStandardMaterial({
@@ -69,13 +69,14 @@ function ruf() {
     });
     materialFunb.name = "mat2";
     const res = new THREE.Object3D();
+    const rf = new THREE.Object3D();
     const me0 = new THREE.Mesh(geom0, materialFun)
     const me1 = new THREE.Mesh(geom1, materialFunb)
-    me0.name = "mesh1"
-    me1.name = "mesh2"
+    me0.name = "mesh_1"
+    me1.name = "mesh_2"
     res.add(me0);
     res.add(me1);
-    res.name = "res"
+    res.name = "model"
     return res
 }
 
@@ -100,6 +101,6 @@ function larme() {
 //savegeom(geom, "./obj/rufgroup.obj");
 const me = ruf()
 //savegeom(me, "./stl/rufobj.stl");
-savegeom(me, "./obj/ruf_new.obj");
+savegeom(me, "./obj/ruf_new2.obj");
 console.log("ok");
 
