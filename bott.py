@@ -39,7 +39,7 @@ def makeBottleTut(myWidth = 10.0, myHeight = 10.0, myThickness = 3.0):
     aArcOfCircle = Part.Arc(aPnt2, aPnt3, aPnt4)
     aSegment1=Part.LineSegment(aPnt1, aPnt2)
     aSegment2=Part.LineSegment(aPnt4, aPnt5)
-
+    
     aEdge1=aSegment1.toShape()
     aEdge2=aArcOfCircle.toShape()
     aEdge3=aSegment2.toShape()

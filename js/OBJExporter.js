@@ -467,7 +467,13 @@ class OBJExporter {
 								mtlOutput += mat.aoMapIntensity ? 'Ka ' + mat.aoMapIntensity + ' ' + mat.aoMapIntensity + ' ' + mat.aoMapIntensity + '\n' : 'Ka 1 1 1\n';
 								mtlOutput += mat.color ? 'Kd ' + mat.color.r + ' ' + mat.color.g + ' ' + mat.color.b + '\n' : 'Kd 1 1 1\n';
 								mtlOutput += mat.emissive ? 'Ke ' + mat.emissive.r + ' ' + mat.emissive.g + ' ' + mat.emissive.b + '\n' : 'Ke 0 0 0\n';
-
+								
+								if (mat.extMap)
+								for (let mp in mat.extMap)
+								{
+									mtlOutput += `${mp} ${mat.extMap[mp]}\n`	
+								}
+								/*
 								if ( mat.map && mat.map.type === 1009 && mat.map.image ) {
 
 									if ( mat.map.image.src || mat.map.image.data ) {
@@ -1061,6 +1067,7 @@ class OBJExporter {
 									}
 
 								}
+								*/
 	
 								count += 1;
 
@@ -1111,164 +1118,40 @@ class OBJExporter {
 							mtlOutput += mat.color ? 'Kd ' + mat.color.r + ' ' + mat.color.g + ' ' + mat.color.b + '\n' : 'Kd 1 1 1\n';
 							mtlOutput += mat.emissive ? 'Ke ' + mat.emissive.r + ' ' + mat.emissive.g + ' ' + mat.emissive.b + '\n' : 'Ke 0 0 0\n';
 
-							if ( mat.map && mat.map.type === 1009 && mat.map.image ) {
-
-								if ( mat.map.image.src || mat.map.image.data ) {
-
-									if ( map_uuids.includes( mat.map.uuid ) === false ) {
-
-										map_uuids.push( mat.map.uuid );
-										map_names[ mat.map.uuid ] = name;
-
-										textures.push( {
-											name,
-											ext,
-											data: imageToData( mat.map.image, ext )
-										});
-
-										mtlOutput += 'map_Kd ' + name + '.png' + '\n';
-
-									} else {
-
-										mtlOutput += 'map_Kd ' + map_names[ mat.map.uuid ] + '.png' + '\n';
-
-									}
-
+							if (mat.extMap)
+								for (let mp in mat.extMap)
+								{
+									mtlOutput += `${mp} ${mat.extMap[mp]}\n`	
 								}
-
+							
+							/*	
+							if (mat.map_Kd)
+							{
+								mtlOutput += 'map_Kd ' + mat.map_Kd + '\n'
+							}
+							//specularMap
+							if (mat.map_Ks)
+							{
+								mtlOutput += 'map_Ks ' + mat.map_Ks + '\n'
+							}
+							//emissiveMap
+							if (mat.map_Ke)
+							{
+								mtlOutput += 'map_Ke ' + mat.map_Ke + '\n'
 							}
 
-							if ( mat.specularMap && mat.specularMap.type === 1009 && mat.specularMap.image ) {
-
-								if ( mat.specularMap.image.src || mat.specularMap.image.data ) {
-
-									if ( map_uuids.includes( mat.specularMap.uuid ) === false ) {
-
-										name = 'specularMap' + count;
-
-										map_uuids.push( mat.specularMap.uuid );
-										map_names[ mat.specularMap.uuid ] = name;
-
-										textures.push( {
-											name,
-											ext,
-											data: imageToData( mat.specularMap.image, ext )
-										});
-
-										mtlOutput += 'map_Ks ' + name + '.png' + '\n';
-
-									} else {
-
-										mtlOutput += 'map_Ks ' + map_names[ mat.specularMap.uuid ] + '.png' + '\n';
-
-									}
-
-								}
-
+							//bumpMap
+							if (mat.map_bump)
+							{
+								mtlOutput += 'map_bump ' + mat.map_bump + '\n'
+							}
+							//lightMap
+							if (mat.map_Pl)
+							{
+								mtlOutput += 'map_Pl ' + mat.map_Pl + '\n'
 							}
 
-							if ( mat.emissiveMap && mat.emissiveMap.type === 1009 && mat.emissiveMap.image ) {
 
-								if ( mat.emissiveMap.image.src || mat.emissiveMap.image.data ) {
-
-									if ( map_uuids.includes( mat.emissiveMap.uuid ) === false ) {
-
-										name = 'emissiveMap' + count;
-
-										map_uuids.push( mat.emissiveMap.uuid );
-										map_names[ mat.emissiveMap.uuid ] = name;
-
-										textures.push( {
-											name,
-											ext,
-											data: imageToData( mat.emissiveMap.image, ext )
-										});
-
-										mtlOutput += 'map_Ke ' + name + '.png' + '\n';
-
-									} else {
-
-										mtlOutput += 'map_Ke ' + map_names[ mat.emissiveMap.uuid ] + '.png' + '\n';
-
-									}
-
-								}
-
-							}
-
-							if ( mat.bumpMap && mat.bumpMap.type === 1009 && mat.bumpMap.image ) {
-
-								if ( mat.bumpMap.image.src || mat.bumpMap.image.data ) {
-
-									if ( map_uuids.includes( mat.bumpMap.uuid ) === false ) {
-
-										name = 'bumpMap' + count;
-
-										map_uuids.push( mat.bumpMap.uuid );
-										map_names[ mat.bumpMap.uuid ] = name;
-
-										textures.push( {
-											name,
-											ext,
-											data: imageToData( mat.bumpMap.image, ext )
-										});
-
-										if ( mat.bumpScale === 1 ) {
-
-											mtlOutput += 'map_bump ' + name + '.png' + '\n';
-	
-										} else {
-	
-											mtlOutput += 'map_bump -bm ' + mat.bumpScale + ' ' + name + '.png' + '\n';
-	
-										}
-
-									} else {
-
-										if ( mat.bumpScale === 1 ) {
-
-											mtlOutput += 'map_bump ' + map_names[ mat.bumpMap.uuid ] + '.png' + '\n';
-	
-										} else {
-	
-											mtlOutput += 'map_bump -bm ' + mat.bumpScale + ' ' + map_names[ mat.bumpMap.uuid ] + '.png' + '\n';
-	
-										}
-
-									}
-
-								}
-
-							}
-
-							if ( mat.lightMap && mat.lightMap.type === 1009 && mat.lightMap.image ) {
-
-								if ( mat.lightMap.image.src || mat.lightMap.image.data ) {
-
-									if ( map_uuids.includes( mat.lightMap.uuid ) === false ) {
-
-										name = 'lightMap' + count;
-
-										map_uuids.push( mat.lightMap.uuid );
-										map_names[ mat.lightMap.uuid ] = name;
-
-										textures.push( {
-											name,
-											ext,
-											data: imageToData( mat.lightMap.image, ext )
-										});
-
-										mtlOutput += 'map_Pl ' + name + '.png' + '\n';
-
-									} else {
-
-										mtlOutput += 'map_Pl ' + map_names[ mat.lightMap.uuid ] + '.png' + '\n';
-
-									}
-
-								}
-
-							}
 
 							if ( mat.metalnessMap && mat.metalnessMap.type === 1009 && mat.metalnessMap.image ) {
 
@@ -1704,6 +1587,7 @@ class OBJExporter {
 								}
 
 							}
+							*/
 
 							count += 1;
 
@@ -1722,7 +1606,7 @@ class OBJExporter {
 			}
 
 			// the following functions were adopted from ColladaExporter.js
-
+			/*
 			function imageToData( image, ext ) {
 
 				let canvas, ctx;
@@ -1776,6 +1660,7 @@ class OBJExporter {
 				return buf;
 
 			}
+			*/
 
 		}
 

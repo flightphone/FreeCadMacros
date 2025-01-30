@@ -27,6 +27,7 @@ def prism(n, r, h):
     
     for i in range(n):
         p = Part.makePolygon([points[i], points[i+1], v, points[i]])
+        
         pw = Part.Wire(p)
         pf = Part.Face(pw)
         faces.append(pf)

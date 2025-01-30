@@ -1,4 +1,30 @@
 import Part
+import FreeCAD as App
+import Sketcher
+
+
+def make_bolt(doc, pitch, height, radius, geoms, name):
+    hepart = doc.addObject("Part::Helix",f"{name}Helix")
+    hepart.Pitch= pitch
+    hepart.Height= height
+    hepart.Radius= radius
+    hepart.Angle= 0
+    hepart.LocalCoord=0
+    hepart.Style=1
+   
+    sk = doc.addObject('Sketcher::SketchObject', f'{name}Sketch')
+    sk.Placement = App.Placement(App.Vector(0.000000, 0.000000, 0.000000), App.Rotation(0.707107, 0.000000, 0.000000, 0.707107))
+    for ge in geoms:
+        sk.addGeometry(ge, False)
+    
+    swe = doc.addObject('Part::Sweep',f'{name}Sweep')
+    swe.Sections=[sk]
+    swe.Spine=(hepart, ['Edge1',])
+    swe.Solid=True
+    swe.Frenet=True
+    doc.recompute()
+    return swe
+    
 
 def make_rect(w, h):
     points = [(-w/2, h/2, 0), (w/2, h/2, 0), (w/2, -h/2, 0), (-w/2, -h/2, 0), (-w/2, h/2, 0)]

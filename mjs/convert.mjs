@@ -8,7 +8,8 @@ console.log("sucessfull")
 */
 //const dir = './stl/pensil';
 //const dir = './stl/tube';
-const dir = './stl/royal';
+//const dir = './stl/royal';
+const dir = './stl/light';
 const fname = path.basename(dir)
 const mesh = mergeDirSTL(dir)
 savegeom(mesh, `./obj/${fname}.obj`)

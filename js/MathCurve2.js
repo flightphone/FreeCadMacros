@@ -224,5 +224,5 @@ static ring(px, py, pz) {
     
 }
 
-export { MathCurve };
+export { MathCurve, bezier3 };
 
