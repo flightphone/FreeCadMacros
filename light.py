@@ -73,7 +73,7 @@ def light():
     base = Part.makeCylinder(d3/2, h3, App.Vector(0, 0, -h3))
     cn2 = Part.makeCone(d4/2, d3/2, h4, App.Vector(0, 0, -h3-h4))
     base = base.fuse(cn2)
-    base = make_offset(doc, base, w3, "base")
+    base = make_offset(doc, base, w3, "basetmp")
     #bolt
     pitch = h3/4
     height = pitch*7
@@ -101,12 +101,11 @@ def light():
 
     
     #base = glass.makeFillet(w3, base.Edges)
-
     base2 = Part.makeSphere(r5, App.Vector(0, 0, c5))
 
 
     sps = [glass, base,  base2]
-    names = ["glass", base,  "base2"]
+    names = ["glass", "base",  "base2"]
     for i, e in zip(names, sps):
         rf = doc.addObject("Part::Feature", f"{i}")
         rf.Shape = e
