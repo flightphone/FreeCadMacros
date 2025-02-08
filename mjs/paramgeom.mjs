@@ -6,7 +6,7 @@ import * as MCF from '../js/mathcurve.js'
 import * as THREE from 'three';
 import { savegeom, edgeSplit } from '../js/nodeExport.mjs';
 import { NormalUtils } from '../js/NormalUtils.js';
-import {imageFromBuffer} from '@canvas/image';
+import { SUBTRACTION, ADDITION, DIFFERENCE, INTERSECTION, REVERSE_SUBTRACTION, Brush, Evaluator } from 'three-bvh-csg';
 import * as fs from "node:fs";
 
 function garley() {
@@ -33,30 +33,28 @@ function larme() {
     const geom = new CurveGeometry((t) => {
         let n = 1
         let x = a * Math.cos(t);
-        let y = a * Math.sin(t)*Math.pow(Math.sin(t / 2), n)
+        let y = a * Math.sin(t) * Math.pow(Math.sin(t / 2), n)
         let z = 0
         return new THREE.Vector3(x, y, 0);
     },
-     -Math.PI,  Math.PI,  0.05,  200,  40,  1,  2
+        -Math.PI, Math.PI, 0.05, 200, 40, 1, 2
     );
     return geom;
 }
 
-async function testimage()
-{
+async function testimage() {
 
 }
 
-function shell()
-{
-    const geom = new SurfGeometry(MCF.shell, 0, 14 * Math.PI, 0, 2 * Math.PI, 1000,  100, 10);
+function shell() {
+    const geom = new SurfGeometry(MCF.shell, 0, 14 * Math.PI, 0, 2 * Math.PI, 1000, 100, 10);
     const geom2 = NormalUtils.make_offset(geom, 0.05);
-    
+
     const materialGeom = new THREE.MeshStandardMaterial({
         roughness: 0.6,
         side: THREE.DoubleSide
     });
-    materialGeom.extMap = {map_Kd: "perlamutr.jpg", map_Pd: "perlamutr.jpg"}
+    materialGeom.extMap = { map_Kd: "perlamutr.jpg", map_Pd: "perlamutr.jpg" }
     materialGeom.name = "mat1";
 
     const materialGeom2 = new THREE.MeshStandardMaterial({
@@ -66,7 +64,7 @@ function shell()
         //vertexColors: false
     });
     materialGeom2.name = "mat2";
-    materialGeom2.extMap = {map_Kd: "wood.jpg" }
+    materialGeom2.extMap = { map_Kd: "wood.jpg" }
     const res = new THREE.Object3D();
     const me0 = new THREE.Mesh(geom, materialGeom)
     const me1 = new THREE.Mesh(geom2, materialGeom2)
@@ -79,9 +77,43 @@ function shell()
     return res;
     //return geom;
 }
-shell()
-//const geom = ch1()
-//savegeom(geom, "./stl/shell25.stl");
+//shell()
+function ch3() {
+    const r = 1.
+    const h = 0.2
+    const hh = 2.
+
+    const cy0 = new THREE.CylinderGeometry(r, r, h)
+    const to = new THREE.TorusGeometry(r, h/2)
+    to.rotateX(Math.PI/2)
+    cy0.translate(0, hh, 0)
+    to.translate(0, hh, 0)
+
+    const evaluator = new Evaluator();
+    const brush0 = new Brush(cy0)
+    brush0.updateMatrixWorld();
+    const brush1 = new Brush(to)
+    brush1.updateMatrixWorld();
+    const res1 = evaluator.evaluate(brush0, brush1, ADDITION)
+    
+    const geom = ch1()
+    const brush2 = new Brush(geom)
+    brush2.updateMatrixWorld();
+
+    const box = new THREE.BoxGeometry(10, 10, 10)
+    box.translate(0, 5 + hh + h/2, 0)
+    const brush3 = new Brush(box)
+    brush3.updateMatrixWorld()
+    const res2 = evaluator.evaluate(brush2, brush3, SUBTRACTION)
+
+    const res3 = evaluator.evaluate(res2, res1, ADDITION)
+    const res = res3.geometry
+    return res
+
+}
+const geom = ch3()
+//savegeom(geom, "./stl/ch1.stl");
+savegeom(geom, "./obj/ch1.obj");
 //savegeom(geom, "./obj/render.obj");
-console.log("shell");
+console.log("ch1");
 
