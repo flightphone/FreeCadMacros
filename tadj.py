@@ -8,6 +8,29 @@ baseh = 0.532
 basew0 = 0.98
 basew1 = 0.234
 
+
+def prism2(n, r, h):
+
+    a = math.pi*2/n
+    points = [(r*math.cos(-a/2 + t*a), r*math.sin(-a/2 + t*a), 0) for t in range(n+1)]
+
+    bot = Part.makePolygon(points)
+    botw = Part.Wire(bot)
+    botf = Part.Face(botw)
+    
+    faces = [botf]
+    v = (0, 0, h)
+    
+    for i in range(n):
+        p = Part.makePolygon([points[i], points[i+1], v, points[i]])
+        pw = Part.Wire(p)
+        pf = Part.Face(pw)
+        faces.append(pf)
+
+    pri2 = Part.makeShell(faces)
+    res = Part.makeSolid(pri2)
+    return res
+
 def shpil(bash):
     
     h1 = 0.035
@@ -63,7 +86,7 @@ def prism(r, h, n = 8):
     return pri
 
 
-def tadj_minaret1(r, h):
+def tadj_minaret1(r, h, k=1):
     n = 8
     a = math.pi*2/n
     l = r*math.sin(a/2)*2 *0.6
@@ -89,7 +112,13 @@ def tadj_minaret1(r, h):
     pri1 = prism(r1, h1)
     res = pri0.cut(pri1)
 
-    
+    r5 = r + (h - h1)/2*k
+    h5 = (h - h1)/2/(r5-r) * r5 
+    pri5 = prism2(8, r5, h5)
+    pri5.translate(App.Vector(0, 0, h1))
+    res = res.fuse(pri5)
+
+
     
     boxm = Part.makeBox(10, l, h1, App.Vector(0, -l/2, 0))
     for _ in range(n):
@@ -107,6 +136,19 @@ def tadj_minaret1(r, h):
     res = res.fuse(pri2)
 
 
+    return res
+
+def tadj_minaret5(r, h):
+    res = tadj_minaret1(r, h, 2)
+    box = Part.makeBox(10, 10, h/2, App.Vector(-5, -5, 0))
+    res = res.cut(box)
+    r0 = r/10
+    clm = Part.makeCylinder(r0, h/2, App.Vector(r-r0, 0, 0))
+    clm.rotate(App.Vector(0, 0, 0),App.Vector(0, 0, 1), 22.5)
+    n = 8
+    for _ in range(8):
+        clm.rotate(App.Vector(0, 0, 0),App.Vector(0, 0, 1), 45)
+        res = res.fuse(clm)
     return res
 
 
@@ -187,12 +229,40 @@ def tadj_face(boxw, fw0, fw1, r2):
     return res
 
 
-def tadj_minaret2(boxw):
+def tadj_minaret2():
+    rp = 0.11
     r = 0.085
+    r2 = r/1.5
     h = baseh + 0.25
-    con = Part.makeCone(r, r/1.5, h, App.Vector(boxw - r*1.1, boxw - r*1.1, 0))
-    mi = tadj_minaret1(r/1.5, 0.095)
-    mi.translate(App.Vector(boxw - r*1.1, boxw - r*1.1, h))
+
+    
+
+    con = Part.makeCone(r, r2, h)
+    kh = 9/7
+    dd = 0.03
+    hh1 = 0.282
+    rr1 = ((h-hh1)/h * (r - r2) + r2) * kh
+    
+    hh2 = 0.552
+    rr2 = ((h-hh2)/h * (r - r2) + r2) * kh
+    
+
+
+    c1 = Part.makeCylinder(rr1, dd, App.Vector(0, 0, hh1-dd))
+    con = con.fuse(c1)
+
+    c2 = Part.makeCylinder(rr2, dd, App.Vector(0, 0, hh2-dd))
+    con = con.fuse(c2)
+
+    c3 = Part.makeCylinder(r2*kh, dd, App.Vector(0, 0, h-dd))
+    con = con.fuse(c3)
+    
+    pri = prism(rp, baseh/4)
+    pri.translate(App.Vector(0, 0, -baseh/4))
+    con = con.fuse(pri)
+    
+    mi = tadj_minaret5(r2, 0.095)
+    mi.translate(App.Vector(0, 0, h))
     con = con.fuse(mi)
     return con
 
@@ -233,12 +303,23 @@ def tadj_box(doc):
     
     boxbot = Part.makeBox(boxw*2, boxw*2, h0/4, App.Vector(-boxw, -boxw, -h0/4))
     box = box.fuse(boxbot)
-    mi2 = tadj_minaret2(boxw)
+    mi2 = tadj_minaret2()
+    mi2.translate(App.Vector(boxw, boxw, 0))
     for _ in range(4):    
         mi2.rotate(App.Vector(0, 0, 0),App.Vector(0, 0, 1), 90)
         box = box.fuse(mi2)
 
     return box    
+
+def uniontest():
+    doc = App.newDocument()
+    r = 0.085
+    h = baseh + 0.25
+    res = tadj_minaret2() #tadj_minaret5(r/1.5, 0.095)
+    resf = doc.addObject("Part::Feature", "res")
+    resf.Shape = res
+    Mesh.export([resf], "stl/uniontest.stl")
+    return res
 
 def tadj():
     doc = App.newDocument()
@@ -278,5 +359,5 @@ def tadj():
     #https://elima.ru/articles/?id=86
 
 tadj()
-print("ok")
-#print(90 - 22.5)
+#uniontest()
+print("ok_tadj")
