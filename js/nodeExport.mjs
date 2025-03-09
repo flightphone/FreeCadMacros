@@ -81,4 +81,6 @@ function mergeDirSTL(folderPath)
     return mergeSTL(srcstl);  
 }
 
+
+
 export { savegeom, edgeSplit, mergeSTL, mergeDirSTL }

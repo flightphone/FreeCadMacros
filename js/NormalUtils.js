@@ -14,6 +14,33 @@ class NormalUtils {
         let res = p.curves[i].getPointAt(t);
         return new Vector3(res.x, res.y, res.z);
     }
+    static make_twist(geom = new BufferGeometry())
+    {
+        geom.computeBoundingBox();
+        const bb = geom.boundingBox;
+        const dx = (bb.max.x - bb.min.x)
+        const r0 = dx/Math.PI/2;
+
+        const res = new BufferGeometry();
+        const vertices = [];
+        const pos = geom.getAttribute("position");
+        const count = pos.count;
+        for (let i = 0; i < count; i++)
+        {
+            let ve = new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)); 
+            let alf = (ve.x - bb.min.x)/dx * Math.PI * 2;
+            let r = r0 + ve.z - bb.min.z;
+            let x = r*Math.cos(alf);
+            let y = r*Math.sin(alf);
+            let z = ve.y - bb.min.y;
+            vertices.push(x, y, z);
+        }
+        res.setIndex(geom.index);
+        res.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+        
+        return res;
+    }
+
     static make_offset(geom = new BufferGeometry(), width = 0.1) {
         const res = new BufferGeometry();
         const vertices = [];
