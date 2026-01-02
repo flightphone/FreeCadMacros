@@ -7,6 +7,7 @@ from CADUtils import  make_revolve, make_offset
 baseh = 0.532
 basew0 = 0.98
 basew1 = 0.234
+nboth = 1.3
 
 
 def prism2(n, r, h):
@@ -257,8 +258,8 @@ def tadj_minaret2():
     c3 = Part.makeCylinder(r2*kh, dd, App.Vector(0, 0, h-dd))
     con = con.fuse(c3)
     
-    pri = prism(rp, baseh/4)
-    pri.translate(App.Vector(0, 0, -baseh/4))
+    pri = prism(rp, baseh/nboth)
+    pri.translate(App.Vector(0, 0, -baseh/nboth))
     con = con.fuse(pri)
     
     mi = tadj_minaret5(r2, 0.095)
@@ -301,7 +302,7 @@ def tadj_box(doc):
         tfase.rotate(App.Vector(0, 0, 0),App.Vector(0, 0, 1), 90)
         box = box.cut(tfase)
     
-    boxbot = Part.makeBox(boxw*2, boxw*2, h0/4, App.Vector(-boxw, -boxw, -h0/4))
+    boxbot = Part.makeBox(boxw*2, boxw*2, h0/nboth, App.Vector(-boxw, -boxw, -h0/nboth))
     box = box.fuse(boxbot)
     mi2 = tadj_minaret2()
     mi2.translate(App.Vector(boxw, boxw, 0))
